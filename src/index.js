@@ -35,25 +35,45 @@ app.post('/users', (request, response) => {
   const {name, username} = request.body;
 
   const newUser = {
-    id: uuidv4,
+    id: uuidv4(),
     name,
     username,
     todos: []
-  }
+  };
   users.push(newUser);
 
   return response.status(201).send();
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
-  //testing middleware
   const {user} = request;
 
   return response.json(user);
 });
 
+/* 
+{ 
+	id: 'uuid', // precisa ser um uuid
+	title: 'Nome da tarefa',
+	done: false, 
+	deadline: '2021-02-27T00:00:00.000Z', 
+	created_at: '2021-02-22T00:00:00.000Z'
+}
+*/
 app.post('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const {user} = request;
+  const {title, deadline} = request.body;
+
+  const newTodo = {
+    id: uuidv4(),
+    title,
+    done: false,
+    deadline: new Date(deadline),
+    created_at: new Date()
+  };
+  user.todos.push(newTodo);
+
+  return response.status(201).send();
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {

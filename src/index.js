@@ -23,6 +23,10 @@ function checksExistsUserAccount(request, response, next) {
   return next();
 }
 
+function getTodo(id, todos){
+  return todos.find((todo) => todo.id === id);
+}
+
 /* 
 { 
 	id: 'uuid', // precisa ser um uuid
@@ -81,10 +85,12 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const {id} = request.params; // id da task
   const {title, deadline} = request.body;
 
-  const todoToUpdate = user.todos.find((todo) => todo.id === id);
+  const todoToUpdate = getTodo(id, user.todos);
   
-  todoToUpdate.title = title;
-  todoToUpdate.deadline = new Date(deadline);
+  if(todoToUpdate){
+    todoToUpdate.title = title;
+    todoToUpdate.deadline = new Date(deadline);
+  }
 
   return response.status(201).send();
 });
